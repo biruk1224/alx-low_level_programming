@@ -1,88 +1,103 @@
 #include "search_algos.h"
 
 /**
- * print_array - print the current part of the array being searched
+ * recursive_search - searches for a value in an array of
+ * integers using the Binary search algorithm
  *
- * @array: pointer to the first element of the array
- * @start: the first element of the array to print
- * @end: the last element of the array to print
+ *
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
  */
-void print_array(int *array, size_t start, size_t end)
+int recursive_search(int *array, size_t size, int value)
 {
-	printf("Searching in array: %d", array[start]);
-	start++;
-	while (start <= end)
-	{
-		printf(", %d", array[start]);
-		start++;
-	}
+	size_t half = size / 2;
+	size_t i;
+
+	if (array == NULL || size == 0)
+		return (-1);
+
+	printf("Searching in array");
+
+	for (i = 0; i < size; i++)
+		printf("%s %d", (i == 0) ? ":" : ",", array[i]);
+
 	printf("\n");
+
+	if (half && size % 2 == 0)
+		half--;
+
+	if (value == array[half])
+		return ((int)half);
+
+	if (value < array[half])
+		return (recursive_search(array, half, value));
+
+	half++;
+
+	return (recursive_search(array + half, size - half, value) + half);
 }
 
 /**
- * bin_search - searches for a value in a sorted array of integers
- *  using the Binary search algorithm
+ * binary_search - calls to binary_search to return
+ * the index of the number
  *
- * @array: pointer to the first element of the array to search in
- * @start: starting index to start the search
- * @size: number of elements in array
- * @value: value to search for
- *
- * Return: index of value or (-1) if value does not exist
-*/
-int bin_search(int *array, size_t start, size_t size, int value)
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
+ */
+int binary_search(int *array, size_t size, int value)
 {
-	size_t l_index, r_index, m_index;
+	int index;
 
-	if (size > 0)
-	{
-		l_index = start;
-		r_index = size - 1;
-		print_array(array, l_index, r_index);
-		while (l_index <= r_index)
-		{
-			m_index = (l_index + r_index) / 2;
-			if (array[m_index] < value)
-				l_index = m_index + 1;
-			else if (array[m_index] > value)
-				r_index = m_index - 1;
-			else
-				return (m_index);
-			if (l_index <= r_index)
-				print_array(array, l_index, r_index);
-		}
-	}
-	return (-1);
+	index = recursive_search(array, size, value);
+
+	if (index >= 0 && array[index] != value)
+		return (-1);
+
+	return (index);
 }
 
-
 /**
- * exponential_search - searches for a value in a sorted array of integers
- * using the Exponential search algorithm
+ * exponential_search - searches for a value in an array of
+ * integers using the Exponential search algorithm
  *
- * @array: pointer to the first element of the array to search in
- * @size: number of elements in array
- * @value: value to search for
- *
- * Return: index of value or (-1) if value does not exist
-*/
-
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
+ */
 int exponential_search(int *array, size_t size, int value)
 {
-	size_t bound = 1, minimum;
+	size_t index, next;
+	int result;
 
-	if (size == 0)
+	if (array == NULL)
 		return (-1);
-	while ((bound < size) && (array[bound] < value))
+
+	if (array[0] == value)
+		return (0);
+
+	index = 1;
+
+	while (array[index] < value && index < size)
 	{
-		printf("Value checked array[%ld] = [%d]\n", bound, array[bound]);
-		bound *= 2;
+		printf("Value checked array[%d] = [%d]\n", (int)index, array[index]);
+		index *= 2;
 	}
-	if (size > bound)
-		minimum = bound + 1;
-	else
-		minimum = size;
-	printf("Value found between indexes [%ld] and [%ld]\n"
-			, bound / 2, minimum - 1);
-	return (bin_search(array, bound / 2, minimum, value));
+
+	next = (index >= size) ? (size - 1) : index;
+
+	index /= 2;
+
+	printf("Value found between indexes [%d] and [%d]\n", (int)index, (int)next);
+
+	result = binary_search(array + index, (next + 1) - index, value);
+
+	if (result >= 0)
+		result += index;
+
+	return (result);
 }

@@ -1,8 +1,8 @@
-#ifndef SEARCH_ALGOS_H
-#define SEARCH_ALGOS_H
+#ifndef _SORTING_ALGOS_H_
+#define _SORTING_ALGOS_H_
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
  * struct listint_s - singly linked list
@@ -40,17 +40,6 @@ typedef struct skiplist_s
 	struct skiplist_s *express;
 } skiplist_t;
 
-/* Create print and free list */
-listint_t *create_list(int *array, size_t size);
-void print_list(const listint_t *list);
-void free_list(listint_t *list);
-
-/* Create print and free skiplist */
-skiplist_t *create_skiplist(int *array, size_t size);
-void print_skiplist(const skiplist_t *list);
-void free_skiplist(skiplist_t *list);
-
-/* Search algorithms */
 int linear_search(int *array, size_t size, int value);
 int binary_search(int *array, size_t size, int value);
 int jump_search(int *array, size_t size, int value);

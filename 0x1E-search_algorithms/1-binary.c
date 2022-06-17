@@ -1,59 +1,61 @@
-
-#include <stdio.h>
-#include <stdlib.h>
 #include "search_algos.h"
+
 /**
-  * binary_search - searches for a value in an array of integers using
-  * the binary search algorithm
-  * assumes that the array is sorted in asc order
-  * also assumes that value won't appear twice in the array
-  * prints the array being searched every time it changes.
-  * @array: pointer to the first element of the array to search in
-  * @size: number of elements in array
-  * @value: value to search for
-  * Return: return index of value, if value is not present in array or
-  * if array is NULL, returns -1
-  */
+ * recursive_search - searches for a value in an array of
+ * integers using the Binary search algorithm
+ *
+ *
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
+ */
+int recursive_search(int *array, size_t size, int value)
+{
+	size_t half = size / 2;
+	size_t i;
+
+	if (array == NULL || size == 0)
+		return (-1);
+
+	printf("Searching in array");
+
+	for (i = 0; i < size; i++)
+		printf("%s %d", (i == 0) ? ":" : ",", array[i]);
+
+	printf("\n");
+
+	if (half && size % 2 == 0)
+		half--;
+
+	if (value == array[half])
+		return ((int)half);
+
+	if (value < array[half])
+		return (recursive_search(array, half, value));
+
+	half++;
+
+	return (recursive_search(array + half, size - half, value) + half);
+}
+
+/**
+ * binary_search - calls to binary_search to return
+ * the index of the number
+ *
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
+ */
 int binary_search(int *array, size_t size, int value)
 {
-	size_t c;
-	size_t lowerbound = 0;
-	size_t upperbound = size - 1;
-	size_t midpoint = -1;
-	int index = -1;
+	int index;
 
-	if (array == NULL)
+	index = recursive_search(array, size, value);
+
+	if (index >= 0 && array[index] != value)
 		return (-1);
-	while (lowerbound <= upperbound)
-	{
-		midpoint = lowerbound + (upperbound - lowerbound) / 2;
-		printf("Searching in array: ");
-		for (c = lowerbound; c <= upperbound; c++)
-		{
-			if (c == upperbound)
-			{
-				printf("%d\n", array[upperbound]);
-				break;
-			}
-			printf("%d, ", array[c]);
-		}
-		if (array[midpoint] == value)
-		{
-			index = midpoint;
-			break;
-		}
-		else
-		{
-			if (array[midpoint] < value)
-			{
-				lowerbound = midpoint + 1;
-			}
-			else
-			{
-				upperbound = midpoint - 1;
-			}
-		}
-	}
-	return (index);
 
+	return (index);
 }
